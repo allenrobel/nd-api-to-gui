@@ -1,26 +1,26 @@
 {
   "include": [
-    "plugins",
-    "tests"
+    "nd_api_to_gui",
   ],
   "exclude": [
     "**/__pycache__",
     ".tox",
     ".venv",
-    "venv"
+    "venv",
+    "prod_env",
   ],
   "reportMissingImports": true,
   "reportMissingTypeStubs": false,
   "pythonVersion": "3.13",
   "pythonPlatform": "All",
   "typeCheckingMode": "basic",
-  "reportPrivateUsage": false,
-  "reportUnusedImport": false,
-  "reportUnusedVariable": false,
-  "reportUnnecessaryTypeIgnoreComment": false,
+  "reportPrivateUsage": true,
+  "reportUnusedImport": true,
+  "reportUnusedVariable": true,
+  "reportUnnecessaryTypeIgnoreComment": true,
   "reportGeneralTypeIssues": false,
-  "reportCallIssue": false,
-  "reportArgumentType": false,
+  "reportCallIssue": true,
+  "reportArgumentType": true,
   "strictParameterNoneValue": false,
   "venvPath": ".",
   "venv": ".venv"
