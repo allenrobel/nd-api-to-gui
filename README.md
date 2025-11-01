@@ -108,7 +108,11 @@ uv sync
 
 ### Configure Environment Variables
 
-Use whatever editor you want to modify the following file.
+Use whatever editor you're comfortable with to modify the following file.
+
+```bash
+$HOME/repos/nd-api-to-gui/env/env
+```
 
 - Set ND_IP4 to the address of your ND controller
 - Set ND_DOMAIN to the login domain (by default, this is `local`)
@@ -119,9 +123,11 @@ Use whatever editor you want to modify the following file.
   `$HOME/repos/nd-api-to-gui`)
 - Save the file
 
+The file contains the following initially.
+
 ```bash
 cd $HOME/repos/nd-api-to-gui
-(nd-api-to-gui) arobel@Allen-M4 nd-api-to-gui % cat env/env
+cat env/env
 # Environment variables for ND-API-to-GUI project
 # Modify the following ND_* variables as needed for your Nexus Dashboard environment
 export ND_IP4=192.168.1.1
@@ -141,11 +147,10 @@ export ND_TO_API_GUI=$HOME/repos/nd-to-api-gui
 if [[ "$PYTHONPATH" != *":$ND_TO_API_GUI"* ]]; then
   export PYTHONPATH=.:$PYTHONPATH:$ND_TO_API_GUI
 fi
-(nd-api-to-gui) arobel@Allen-M4 nd-api-to-gui %
 ```
 
 Finally, source the file to load these environment variables (which the
-scripts read so they have the information they need to connect.)
+scripts read so they have the information they need to connect to ND).
 
 ```bash
 cd $HOME/repos/nd-api-to-gui
