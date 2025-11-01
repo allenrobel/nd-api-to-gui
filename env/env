@@ -1,0 +1,19 @@
+# Environment variables for ND-API-to-GUI project
+# Modify the following ND_* variables as needed for your Nexus Dashboard environment
+export ND_IP4=192.168.1.1
+export ND_DOMAIN=local
+export ND_USERNAME=admin
+#
+# Define ND_PASSWORD in a terminal for better security or (not recommended) define here if you're in a secure environment
+# export ND_PASSWORD=MyPassword
+#
+# Path to the nd-api-to-gui repository on your local machine
+export ND_TO_API_GUI=$HOME/repos/nd-to-api-gui
+#
+# No need to modify below this line
+#
+# Append ND_TO_API_GUI to PYTHONPATH only if not already present
+#
+if [[ "$PYTHONPATH" != *":$ND_TO_API_GUI"* ]]; then
+  export PYTHONPATH=.:$PYTHONPATH:$ND_TO_API_GUI
+fi

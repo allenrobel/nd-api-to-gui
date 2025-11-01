@@ -1,0 +1,27 @@
+{
+  "include": [
+    "plugins",
+    "tests"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    ".tox",
+    ".venv",
+    "venv"
+  ],
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "pythonVersion": "3.13",
+  "pythonPlatform": "All",
+  "typeCheckingMode": "basic",
+  "reportPrivateUsage": false,
+  "reportUnusedImport": false,
+  "reportUnusedVariable": false,
+  "reportUnnecessaryTypeIgnoreComment": false,
+  "reportGeneralTypeIssues": false,
+  "reportCallIssue": false,
+  "reportArgumentType": false,
+  "strictParameterNoneValue": false,
+  "venvPath": ".",
+  "venv": ".venv"
+}

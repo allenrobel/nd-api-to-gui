@@ -1,0 +1,163 @@
+# nd_api_to_gui
+
+The intent of this repository is to provide those developing Nexus Dashboard (ND)
+applications with an easy way to correlate ND REST API parameters with their
+corresponding fields in the ND graphical user interface.
+
+We accomplish this with two scripts and supporting libraries, as described below.
+
+## nd_template_names.py
+
+Return all templates supported by ND.  This takes about 10 seconds to run
+so be patient.
+
+```bash
+cd $HOME/repos/nd-api-to-gui
+source .venv/bin/activate
+source env/env
+./nd_template_names.py
+```
+
+### Example partial output for nd_template_names.py
+
+```text
+- AI_Fabric_QOS_100G
+- AI_Fabric_QOS_25G
+- AI_Fabric_QOS_400G
+- AI_Fabric_QOS_800G
+- AI_Fabric_QOS_Classification_Custom
+- AI_Fabric_QOS_Queuing_Custom
+- Default_Network_Extension_Universal
+
+etc...
+```
+
+You could redirect the output to a file so that you have the list locally
+for offline reference.
+
+```bash
+./nd_template_names.py > templates.txt
+```
+
+## nd_api_to_gui.py
+
+Passing one of the above template names into nd_api_to_gui.py
+returns information about the parameters in that template that
+are most useful for our purposes.
+
+```bash
+cd $HOME/repos/nd-api-to-gui
+source .venv/bin/activate
+source env/env
+./nd_api_to_gui.py --template-name Default_Network_Extension_Universal
+```
+
+### Example partial output for nd_api_to_gui.py
+
+For each API key, the output contains:
+
+- Description: The description that accompanies the GUI field
+- GUI Section: The tab in the ND GUI that contains the field
+- GUI Field Name: The name of the field associated with the API key
+
+```text
+API Key: ENABLE_NETFLOW:
+  Description: Netflow is supported only if it is enabled on fabric. For NX-OS only
+  GUI Section: Advanced
+  GUI Field Name: Enable Netflow
+
+API Key: MULTISITE_CONN:
+  Description: L2 Extension Information
+  GUI Section: MULTISITE
+  GUI Field Name: L2 Extension Information
+
+API Key: SVI_NETFLOW_MONITOR:
+  Description: Applicable only if 'Layer 2 Only' is not enabled. Provide monitor name defined in fabric setting for Layer 3 Record. For NX-OS only
+  GUI Section: Advanced
+  GUI Field Name: Interface Vlan Netflow Monitor
+
+API Key: VLAN_NETFLOW_MONITOR:
+  Description: Provide monitor name defined in fabric setting for Layer 3 Record. For NX-OS only
+  GUI Section: Advanced
+  GUI Field Name: Vlan Netflow Monitor
+
+etc...
+```
+
+## Installation and Initial Setup
+
+### Clone the repository
+
+I prefer keeping all my repositories in one place, so will use $HOME/repos in the
+examples below.  But you can clone it anywhere you want.
+
+```bash
+cd $HOME/repos
+git clone UPDATE_URL
+```
+
+### Create a Virtual Environment and Install Dependencies
+
+```bash
+cd $HOME/repos/nd-api-to-gui
+python3 -m .venv --prompt nd-api-to-gui
+source .venv/bin/activate
+pip install uv
+uv sync
+```
+
+### Configure Environment Variables
+
+Use whatever editor you want to modify the following file.
+
+- Set ND_IP4 to the address of your ND controller
+- Set ND_DOMAIN to the login domain (by default, this is `local`)
+- Set ND_USERNAME to the login username (by default, this is `admin`)
+- For ND_PASSWORD, I usually set this manually in my terminal session so it's not laying around on disk.
+  But you can set it in this file if you're comfortable with that.
+- Finally, set ND_TO_API_GUI to point to this repository (in my case, that's
+  `$HOME/repos/nd-api-to-gui`)
+- Save the file
+
+```bash
+cd $HOME/repos/nd-api-to-gui
+(nd-api-to-gui) arobel@Allen-M4 nd-api-to-gui % cat env/env
+# Environment variables for ND-API-to-GUI project
+# Modify the following ND_* variables as needed for your Nexus Dashboard environment
+export ND_IP4=192.168.1.1
+export ND_DOMAIN=local
+export ND_USERNAME=admin
+#
+# Define ND_PASSWORD in a terminal for better security or (not recommended) define here if you're in a secure environment
+# export ND_PASSWORD=MyPassword
+#
+# Path to the nd-api-to-gui repository on your local machine
+export ND_TO_API_GUI=$HOME/repos/nd-to-api-gui
+#
+# No need to modify below this line
+#
+# Append ND_TO_API_GUI to PYTHONPATH only if not already present
+#
+if [[ "$PYTHONPATH" != *":$ND_TO_API_GUI"* ]]; then
+  export PYTHONPATH=.:$PYTHONPATH:$ND_TO_API_GUI
+fi
+(nd-api-to-gui) arobel@Allen-M4 nd-api-to-gui %
+```
+
+Finally, source the file to load these environment variables (which the
+scripts read so they have the information they need to connect.)
+
+```bash
+cd $HOME/repos/nd-api-to-gui
+source .venv/bin/activate
+source env/env
+```
+
+Done!  Now you can run the scripts, per the examples above.
+
+If you didn't set ND_PASSWORD in the env/env file, don't forget to
+set it in your terminal session before running the scripts.
+
+```bash
+export ND_PASSWORD=MyPassword
+```
