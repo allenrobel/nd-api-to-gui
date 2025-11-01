@@ -41,9 +41,12 @@ for offline reference.
 
 ## api_to_gui.py
 
-Passing one of the above template names into api_to_gui.py
-returns information about the parameters in that template that
-are most useful for our purposes.
+Passing one of the above template names into api_to_gui.py using the
+`--template-name` argument returns information about the parameters
+in that template that are most useful for our purposes.
+
+Note, to save your fingers `--template-name` can be shortened to e.g.
+`--template`, `--te`, `--t`, etc, and will still work.
 
 ```bash
 cd $HOME/repos/nd-api-to-gui
@@ -149,7 +152,7 @@ if [[ "$PYTHONPATH" != *":$ND_API_TO_GUI"* ]]; then
 fi
 ```
 
-Finally, source the file to load these environment variables (which the
+Finally, `source` the file to load these environment variables (which the
 scripts read so they have the information they need to connect to ND).
 
 ```bash
