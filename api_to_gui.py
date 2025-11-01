@@ -87,14 +87,13 @@ except ValueError as error:
     print(f"Error occurred: {error}")
     sys_exit(1)
 
-print("If GUI Section is blank, the parameter is likely located in General Parameters.")
 for param_name in instance.parameter_names:
     instance.parameter_name = param_name
     display_name = instance.parameter_display_name
     section = instance.parameter_section
     if display_name in ["", None]:
         continue
-    MESSAGE = f"API Key: {instance.parameter_name}:\n"
+    MESSAGE = f"API Key: {instance.parameter_name}\n"
     MESSAGE += f"  Description: {instance.parameter_description}\n"
     MESSAGE += f"  GUI Section: {section}\n"
     MESSAGE += f"  GUI Field Name: {display_name}\n"
