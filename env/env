@@ -8,12 +8,12 @@ export ND_USERNAME=admin
 # export ND_PASSWORD=MyPassword
 #
 # Path to the nd-api-to-gui repository on your local machine
-export ND_TO_API_GUI=$HOME/repos/nd-to-api-gui
+export ND_API_TO_GUI=$HOME/repos/nd-to-api-gui
 #
 # No need to modify below this line
 #
-# Append ND_TO_API_GUI to PYTHONPATH only if not already present
+# Append ND_API_TO_GUI to PYTHONPATH only if not already present
 #
-if [[ "$PYTHONPATH" != *":$ND_TO_API_GUI"* ]]; then
-  export PYTHONPATH=.:$PYTHONPATH:$ND_TO_API_GUI
+if [[ "$PYTHONPATH" != *":$ND_API_TO_GUI"* ]]; then
+  export PYTHONPATH=.:$PYTHONPATH:$ND_API_TO_GUI
 fi

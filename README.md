@@ -6,7 +6,7 @@ corresponding fields in the ND graphical user interface.
 
 We accomplish this with two scripts and supporting libraries, as described below.
 
-## nd_template_names.py
+## template_names.py
 
 Return all templates supported by ND.  This takes about 10 seconds to run
 so be patient.
@@ -15,10 +15,10 @@ so be patient.
 cd $HOME/repos/nd-api-to-gui
 source .venv/bin/activate
 source env/env
-./nd_template_names.py
+./template_names.py
 ```
 
-### Example partial output for nd_template_names.py
+### Example partial output for template_names.py
 
 ```text
 - AI_Fabric_QOS_100G
@@ -36,12 +36,12 @@ You could redirect the output to a file so that you have the list locally
 for offline reference.
 
 ```bash
-./nd_template_names.py > templates.txt
+./template_names.py > templates.txt
 ```
 
-## nd_api_to_gui.py
+## api_to_gui.py
 
-Passing one of the above template names into nd_api_to_gui.py
+Passing one of the above template names into api_to_gui.py
 returns information about the parameters in that template that
 are most useful for our purposes.
 
@@ -49,14 +49,14 @@ are most useful for our purposes.
 cd $HOME/repos/nd-api-to-gui
 source .venv/bin/activate
 source env/env
-./nd_api_to_gui.py --template-name Default_Network_Extension_Universal
+./api_to_gui.py --template-name Default_Network_Extension_Universal
 ```
 
-### Example partial output for nd_api_to_gui.py
+### Example partial output for api_to_gui.py
 
 For each API key, the output contains:
 
-- Description: The description that accompanies the GUI field
+- Description: The description that accompanies the field in the Nexus Dashboard GUI
 - GUI Section: The tab in the ND GUI that contains the field
 - GUI Field Name: The name of the field associated with the API key
 
@@ -119,7 +119,7 @@ $HOME/repos/nd-api-to-gui/env/env
 - Set ND_USERNAME to the login username (by default, this is `admin`)
 - For ND_PASSWORD, I usually set this manually in my terminal session so it's not laying around on disk.
   But you can set it in this file if you're comfortable with that.
-- Finally, set ND_TO_API_GUI to point to this repository (in my case, that's
+- Finally, set ND_API_TO_GUI to point to this repository (in my case, that's
   `$HOME/repos/nd-api-to-gui`)
 - Save the file
 
@@ -138,14 +138,14 @@ export ND_USERNAME=admin
 # export ND_PASSWORD=MyPassword
 #
 # Path to the nd-api-to-gui repository on your local machine
-export ND_TO_API_GUI=$HOME/repos/nd-to-api-gui
+export ND_API_TO_GUI=$HOME/repos/nd-to-api-gui
 #
 # No need to modify below this line
 #
-# Append ND_TO_API_GUI to PYTHONPATH only if not already present
+# Append ND_API_TO_GUI to PYTHONPATH only if not already present
 #
-if [[ "$PYTHONPATH" != *":$ND_TO_API_GUI"* ]]; then
-  export PYTHONPATH=.:$PYTHONPATH:$ND_TO_API_GUI
+if [[ "$PYTHONPATH" != *":$ND_API_TO_GUI"* ]]; then
+  export PYTHONPATH=.:$PYTHONPATH:$ND_API_TO_GUI
 fi
 ```
 
