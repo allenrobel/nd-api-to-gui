@@ -31,11 +31,13 @@ from os import environ
 
 class Log:
     """
-    ### Summary
+    # Summary
+
     Create the base dcnm logging object.
 
-    ### Raises
-    -   ``ValueError`` if:
+    ## Raises
+
+    -   `ValueError` if:
             -   An error is encountered reading the logging config file.
             -   An error is encountered parsing the logging config file.
             -   An invalid handler is found in the logging config file.
@@ -43,30 +45,31 @@ class Log:
                         which currently contains: "file".
             -   No formatters are found in the logging config file that
                 are associated with the configured handlers.
-    -   ``TypeError`` if:
-            -   ``develop`` is not a boolean.
+    -   `TypeError` if:
+            -   `develop` is not a boolean.
 
-    ### Usage
+    ## Usage
 
     By default, Log() does the following:
 
-    1.  Reads the environment variable ``NDFC_LOGGING_CONFIG`` to determine
+    1.  Reads the environment variable `ND_LOGGING_CONFIG` to determine
         the path to the logging config file.  If the environment variable is
-        not set, then logging is disabled.
-    2.  Sets ``develop`` to False.  This disables exceptions raised by the
+        not set, it tries `NDFC_LOGGING_CONFIG` and, if this is also not
+        set, then logging is disabled.
+    2.  Sets `develop` to False.  This disables exceptions raised by the
         logging module itself.
 
     Hence, the simplest usage for Log() is:
 
-    -   Set the environment variable ``NDFC_LOGGING_CONFIG`` to the
-        path of the logging config file.  ``bash`` shell is used in the
+    -   Set the environment variable `ND_LOGGING_CONFIG` to the
+        path of the logging config file.  `bash` shell is used in the
         example below.
 
     ```bash
-    export NDFC_LOGGING_CONFIG="/path/to/logging_config.json"
+    export ND_LOGGING_CONFIG="/path/to/logging_config.json"
     ```
 
-    -   Instantiate a Log() object instance and call ``commit()`` on the instance:
+    -   Instantiate a Log() object instance and call `commit()` on the instance:
 
     ```python
     from ansible_collections.cisco.dcnm.plugins.module_utils.common.log_v2 import Log
@@ -77,15 +80,16 @@ class Log:
         # handle error
     ```
 
-    To later disable logging, unset the environment variable.
-    ``bash`` shell is used in the example below.
+    To later disable logging, unset the environment variables that are
+    tried by Log(). `bash` shell is used in the example below.
 
     ```bash
+    unset ND_LOGGING_CONFIG
     unset NDFC_LOGGING_CONFIG
     ```
 
     To enable exceptions from the logging module (not recommended, unless needed for
-    development), set ``develop`` to True:
+    development), set `develop` to True:
 
     ```python
     from ansible_collections.cisco.dcnm.plugins.module_utils.common.log_v2 import Log
@@ -98,11 +102,11 @@ class Log:
     ```
 
     To directly set the path to the logging config file, overriding the
-    ``NDFC_LOGGING_CONFIG`` environment variable, set the ``config``
-    property prior to calling ``commit()``:
+    `ND_LOGGING_CONFIG` and `NDFC_LOGGING_CONFIG` environment variables,
+    set the `config` property prior to calling `commit()`:
 
     ```python
-    from ansible_collections.cisco.dcnm.plugins.module_utils.common.log_v2 import Log
+    from nd_api_to_gui.log_v2 import Log
     try:
         log = Log()
         log.config = "/path/to/logging_config.json"
@@ -112,14 +116,17 @@ class Log:
     ```
 
     At this point, a base/parent logger is created for which all other
-    loggers throughout the dcnm collection will be children.
+    loggers throughout this repository will be children.
     This allows for a single logging config to be used for all modules in the
-    collection, and allows for the logging config to be specified in a
+    repository, and allows for the logging config to be specified in a
     single place external to the code.
 
-    ### Example module code using the Log() object
+    ## Example module code using the Log() object
+
+    Relevant only for the DCNM Ansible Collection.
 
     In the main() function of a module.
+
     ```python
     from ansible_collections.cisco.dcnm.plugins.module_utils.common.log_v2 import Log
 
@@ -146,11 +153,12 @@ class Log:
             self.log.debug("This is a debug message.")
     ```
 
-    ### Logging Config File
-    The logging config file MUST conform to ``logging.config.dictConfig``
+    ## Logging Config File
+
+    The logging config file MUST conform to `logging.config.dictConfig`
     from Python's standard library and MUST NOT contain any handlers or
-    that log to stdout or stderr.  The logging config file MUST only
-    contain handlers that log to files.
+    that log to stdout or stderr (DCNM Ansible Collection only).  The
+    logging config file MUST only contain handlers that log to files.
 
     An example logging config file is shown below:
 
@@ -196,7 +204,10 @@ class Log:
 
     def __init__(self) -> None:
         self.class_name = self.__class__.__name__
-        self._config: str = environ.get("NDFC_LOGGING_CONFIG", "")
+        self._config: str = environ.get("ND_LOGGING_CONFIG", "")
+        if not self._config:
+            self._config = environ.get("NDFC_LOGGING_CONFIG", "")
+
         self._develop: bool = False
 
         # Disable exceptions raised by the logging module.
@@ -205,7 +216,6 @@ class Log:
 
         self.valid_handlers = set()
         self.valid_handlers.add("file")
-
 
     def disable_logging(self) -> None:
         """
@@ -235,7 +245,7 @@ class Log:
 
         ## Raises
 
-        -   ``ValueError`` if:
+        -   `ValueError` if:
                 -   An error is encountered reading the logging config file.
         """
         if str(self.config).strip() == "":
@@ -277,7 +287,7 @@ class Log:
 
         ## Raises
 
-        -   ``ValueError`` if:
+        -   `ValueError` if:
                 -   The logging config file contains no handlers.
                 -   The logging config file contains a handler other than
                     the handlers listed in self.valid_handlers (see class
@@ -303,14 +313,14 @@ class Log:
         """
         # Summary
 
-        -   If ``config`` is None, disable logging.
-        -   If ``config`` is a JSON file conformant with
-            ``logging.config.dictConfig``, read the file and configure the
+        -   If `config` is None, disable logging.
+        -   If `config` is a JSON file conformant with
+            `logging.config.dictConfig`, read the file and configure the
             base logger instance from the file's contents.
 
         ## Raises
 
-        -   ``ValueError`` if:
+        -   `ValueError` if:
                 -   An error is encountered reading the logging config file.
 
         ## Notes
@@ -338,40 +348,54 @@ class Log:
         # Summary
 
         Path to a JSON file from which logging config is read.
-        JSON file must conform to ``logging.config.dictConfig`` from Python's
-        standard library.
+        JSON file must conform to `logging.config.dictConfig` from
+        the Python logging library.
+
+        ## Raises
+
+        None
 
         ## Default
 
-        If the environment variable ``NDFC_LOGGING_CONFIG`` is set, then
-        the value of that variable is used.  Otherwise, "".
+        If the environment variable `ND_LOGGING_CONFIG` is set, it will
+        be used.  Otherwise, if `NDFC_LOGGING_CONFIG` is set, it will be used.
+        If neither environment variable is set, the default is "" (logging
+        will be disabled).
 
         The environment variable can be overridden by directly setting
-        ``config`` to one of the following prior to calling ``commit()``:
+        `config` to one of the following prior to calling `commit()`:
 
-        1.  None.  Logging will be disabled.
+        1.  Empty string (`""`).  Logging will be disabled.
         2.  Path to a JSON file from which logging config is read.
-            Must conform to ``logging.config.dictConfig`` from Python's
+            Must conform to `logging.config.dictConfig` from Python's
             standard library.
         """
         return self._config
 
     @config.setter
-    def config(self, value):
+    def config(self, value: str) -> None:
         self._config = value
 
     @property
     def develop(self):
         """
-        ### Summary
+        # Summary
+
         Disable or enable exceptions raised by the logging module.
 
-        ### Default
+        ## Raises
+
+        -   `TypeError` if:
+                -   `develop` is not a boolean.
+
+        ## Default
+
         False
 
-        ### Valid Values
-        -   ``True``:  Exceptions will be raised by the logging module.
-        -   ``False``: Exceptions will not be raised by the logging module.
+        ## Valid Values
+
+        -   `True`:  Exceptions will be raised by the logging module.
+        -   `False`: Exceptions will not be raised by the logging module.
         """
         return self._develop
 
