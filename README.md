@@ -87,6 +87,16 @@ API Key: VLAN_NETFLOW_MONITOR
 etc...
 ```
 
+You could also search for a specific key with the following.
+
+```bash
+./api_to_gui.py --t Easy_Fabric | grep -A4 preInterfaceConfigTor$
+API Key: preInterfaceConfigTor
+  Description: Additional CLIs, added before interface configurations, for all ToRs as captured from Show Running Configuration
+  GUI Section: Freeform
+  GUI Field Name: ToR Pre-Interfaces Freeform Config
+```
+
 ## Installation and Initial Setup
 
 ### Clone the repository
