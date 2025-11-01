@@ -64,22 +64,22 @@ For each API key, the output contains:
 - GUI Field Name: The name of the field associated with the API key
 
 ```text
-API Key: ENABLE_NETFLOW:
+API Key: ENABLE_NETFLOW
   Description: Netflow is supported only if it is enabled on fabric. For NX-OS only
   GUI Section: Advanced
   GUI Field Name: Enable Netflow
 
-API Key: MULTISITE_CONN:
+API Key: MULTISITE_CONN
   Description: L2 Extension Information
   GUI Section: MULTISITE
   GUI Field Name: L2 Extension Information
 
-API Key: SVI_NETFLOW_MONITOR:
+API Key: SVI_NETFLOW_MONITOR
   Description: Applicable only if 'Layer 2 Only' is not enabled. Provide monitor name defined in fabric setting for Layer 3 Record. For NX-OS only
   GUI Section: Advanced
   GUI Field Name: Interface Vlan Netflow Monitor
 
-API Key: VLAN_NETFLOW_MONITOR:
+API Key: VLAN_NETFLOW_MONITOR
   Description: Provide monitor name defined in fabric setting for Layer 3 Record. For NX-OS only
   GUI Section: Advanced
   GUI Field Name: Vlan Netflow Monitor
