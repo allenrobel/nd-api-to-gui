@@ -35,51 +35,55 @@ from nd_api_to_gui.sender_requests import Sender
 
 class RestSend:
     """
-    ### Summary
+    # Summary
+
     -   Send REST requests to the controller with retries.
-    -   Accepts a ``Sender()`` class that implements the sender interface.
+    -   Accepts a `Sender()` class that implements the sender interface.
             -   The sender interface is defined in
-                ``module_utils/common/sender_dcnm.py``
-    -   Accepts a ``ResponseHandler()`` class that implements the response
+                `module_utils/common/sender_dcnm.py`
+    -   Accepts a `ResponseHandler()` class that implements the response
         handler interface.
             -   The response handler interface is defined in
-                ``module_utils/common/response_handler.py``
+                `module_utils/common/response_handler.py`
 
-    ### Raises
-    -   ``ValueError`` if:
+    ## Raises
+
+    -   `ValueError` if:
             -   self._verify_commit_parameters() raises
-                ``ValueError``
-            -   ResponseHandler() raises ``TypeError`` or ``ValueError``
-            -   Sender().commit() raises ``ValueError``
-            -   ``verb`` is not a valid verb (GET, POST, PUT, DELETE)
-    -  ``TypeError`` if:
-            -   ``check_mode`` is not a ``bool``
-            -   ``path`` is not a ``str``
-            -   ``payload`` is not a ``dict``
-            -   ``response`` is not a ``dict``
-            -   ``response_current`` is not a ``dict``
-            -   ``response_handler`` is not an instance of
-                ``ResponseHandler()``
-            -   ``result`` is not a ``dict``
-            -   ``result_current`` is not a ``dict``
-            -   ``send_interval`` is not an ``int``
-            -   ``sender`` is not an instance of ``Sender()``
-            -   ``timeout`` is not an ``int``
-            -   ``unit_test`` is not a ``bool``
+                `ValueError`
+            -   ResponseHandler() raises `TypeError` or `ValueError`
+            -   Sender().commit() raises `ValueError`
+            -   `verb` is not a valid verb (GET, POST, PUT, DELETE)
+    -  `TypeError` if:
+            -   `check_mode` is not a `bool`
+            -   `path` is not a `str`
+            -   `payload` is not a `dict`
+            -   `response` is not a `dict`
+            -   `response_current` is not a `dict`
+            -   `response_handler` is not an instance of
+                `ResponseHandler()`
+            -   `result` is not a `dict`
+            -   `result_current` is not a `dict`
+            -   `send_interval` is not an `int`
+            -   `sender` is not an instance of `Sender()`
+            -   `timeout` is not an `int`
+            -   `unit_test` is not a `bool`
 
-    ### Usage discussion
+    ## Usage discussion
+
     -   A Sender() class is used in the usage example below that requires an
-        instance of ``AnsibleModule``, and uses ``dcnm_send()`` to send
+        instance of `AnsibleModule`, and uses `dcnm_send()` to send
         requests to the controller.
-        -   See ``module_utils/common/sender_dcnm.py`` for details about
-            implementing ``Sender()`` classes.
+        -   See `module_utils/common/sender_dcnm.py` for details about
+            implementing `Sender()` classes.
     -   A ResponseHandler() class is used in the usage example below that
         abstracts controller response handling.  It accepts a controller
         response dict and returns a result dict.
-        -   See ``module_utils/common/response_handler.py`` for details
-            about implementing ``ResponseHandler()`` classes.
+        -   See `module_utils/common/response_handler.py` for details
+            about implementing `ResponseHandler()` classes.
 
-    ### Usage example
+    ## Usage example
+
     ```python
     params = {"check_mode": False, "state": "merged"}
     sender = Sender() # class that implements the sender interface
@@ -118,13 +122,9 @@ class RestSend:
 
         self._implements: str = "rest_send_v2"
 
-        self.log = logging.getLogger(f"dcnm.{self.class_name}")
+        self.log: logging.Logger = logging.getLogger(f"dcnm.{self.class_name}")
 
         self.params: dict[str, Any] = params
-        msg = "ENTERED RestSend(): "
-        msg += f"params: {self.params}"
-        self.log.debug(msg)
-
         self._check_mode: bool = self.params.get("check_mode", False)
         self._path: str = ""
         self._payload: dict[str, Any] = {}
