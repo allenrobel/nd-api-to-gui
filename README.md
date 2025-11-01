@@ -97,6 +97,12 @@ API Key: preInterfaceConfigTor
   GUI Field Name: ToR Pre-Interfaces Freeform Config
 ```
 
+Or display all fields located in a given GUI Section
+
+```bash
+./api_to_gui.py --t Easy_Fabric | grep "GUI Section: Freeform" -B3 -A1
+```
+
 ## Installation and Initial Setup
 
 ### Clone the repository
