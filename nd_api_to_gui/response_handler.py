@@ -35,17 +35,17 @@ class ResponseHandler:
 
     ## Raises
 
-    -   ``TypeError`` if:
-            -   ``response`` is not a dict.
-    -   ``ValueError`` if:
-            -   ``response`` is missing any fields required by the handler
+    -   `TypeError` if:
+            -   `response` is not a dict.
+    -   `ValueError` if:
+            -   `response` is missing any fields required by the handler
                 to calculate the result.
                 -   Required fields:
-                        -   ``RETURN_CODE``
-                        -   ``MESSAGE``
-            -   ``verb`` is not valid.
-            -   ``response`` is not set prior to calling ``commit()``.
-            -   ``verb`` is not set prior to calling ``commit()``.
+                        -   `RETURN_CODE`
+                        -   `MESSAGE`
+            -   `verb` is not valid.
+            -   `response` is not set prior to calling `commit()`.
+            -   `verb` is not set prior to calling `commit()`.
 
     ## Interface specification
 
@@ -116,6 +116,11 @@ class ResponseHandler:
         # Summary
 
         Call the appropriate handler for response based on verb
+
+        ## Raises
+
+        -   `ValueError` if:
+                -   `verb` is not set.
         """
         if self._verb == "":
             msg = f"{self.class_name}._handle_response: "
@@ -130,8 +135,10 @@ class ResponseHandler:
 
     def _get_response(self) -> None:
         """
-        ### Summary
+        # Summary
+
         Handle GET responses from the controller and set self._result.
+
         -	self._result is a dict containing:
             -   found:
                     -   False, if response:
@@ -143,9 +150,14 @@ class ResponseHandler:
                             - RETURN_CODE != 200 or
                             - MESSAGE != "OK"
                     -   True otherwise
+
+        ## Raises
+
+        -   `ValueError` if:
+                -   `response` is not set.
         """
         result: dict[str, bool] = {}
-        if self.response is None:
+        if not self.response:
             msg = f"{self.class_name}._get_response: "
             msg += "response must be set prior to calling "
             msg += f"{self.class_name}._get_response"
@@ -171,9 +183,11 @@ class ResponseHandler:
 
     def _post_put_delete_response(self) -> None:
         """
-        ### Summary
+        # Summary
+
         Handle POST, PUT, DELETE responses from the controller and set
         self._result.
+
         -	self._result is a dict containing:
             -   changed:
                 - True if changes were made by the controller
@@ -185,10 +199,15 @@ class ResponseHandler:
                     - MESSAGE != "OK" or
                     - ERROR key is present
                 -   True otherwise
+
+        ## Raises
+
+        -   `ValueError` if:
+                -   `response` is not set.
         """
         method_name: str = inspect.stack()[0][3]
         result: dict[str, bool] = {}
-        if self.response is None:
+        if not self.response:
             msg = f"{self.class_name}.{method_name}: "
             msg += "response must be set prior to calling "
             msg += f"{self.class_name}.{method_name}"
@@ -217,9 +236,9 @@ class ResponseHandler:
 
         ## Raises
 
-        -   ``ValueError`` if:
-                -   ``response`` is not set.
-                -   ``verb`` is not set.
+        -   `ValueError` if:
+                -   `response` is not set.
+                -   `verb` is not set.
         """
         method_name: str = inspect.stack()[0][3]
         msg = f"{self.class_name}.{method_name}: "
@@ -260,14 +279,14 @@ class ResponseHandler:
 
         ## Raises
 
-        -   setter: ``TypeError`` if:
-                -   ``response`` is not a dict.
-        -   setter: ``ValueError`` if:
-                -   ``response`` is missing any fields required by the handler
+        -   setter: `TypeError` if:
+                -   `response` is not a dict.
+        -   setter: `ValueError` if:
+                -   `response` is missing any fields required by the handler
                     to calculate the result.
                 -   Required fields:
-                        -   ``RETURN_CODE``
-                        -   ``MESSAGE``
+                        -   `RETURN_CODE`
+                        -   `MESSAGE`
 
         """
         return self._response
@@ -295,28 +314,30 @@ class ResponseHandler:
     @property
     def result(self) -> dict[str, bool]:
         """
-        -   getter: Return result.
-        -   setter: Set result.
-        -   setter: Raise ``TypeError`` if result is not a dict.
+        # Summary
+
+        The calculated result based on the controller response and verb.
+
+        ## Raises
+
+        -   setter: `TypeError` if result is not a dict.
         """
         return self._result
 
     @property
     def verb(self) -> str:
         """
-        ### Summary
+        # Summary
+
         The request verb.
 
-        ### Raises
-        -   setter: ``ValueError`` if:
-                -   ``verb`` is not valid.
-                -   Valid verbs: "DELETE", "GET", "POST", "PUT".
+        -   Valid verbs: "DELETE", "GET", "POST", "PUT".
 
-        ### getter
-        Internal interface that returns the request verb.
+        ## Raises
 
-        ### setter
-        External interface to set the request verb.
+        -   setter: `ValueError` if:
+                -   `verb` is not valid.
+
         """
         return self._verb
 
