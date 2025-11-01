@@ -240,7 +240,13 @@ class RestApiToGui:
     @property
     def config(self) -> dict[str, Any]:
         """
+        # Summary
+
         The fabric group default config.
+
+        ## Raises
+
+        None
         """
         return self._fabric_group_default_config
 
@@ -344,7 +350,9 @@ class RestApiToGui:
 
         ## Raises
 
-        None
+        -  `ValueError` if:
+            -   commit has not been called (self._refreshed is False).
+            -   parameter_name is not set.
         """
         method_name: str = inspect.stack()[0][3]
         if not self._refreshed:
