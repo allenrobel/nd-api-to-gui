@@ -83,6 +83,26 @@ class ParamInfo:
         self._raise_on_missing: bool = True
         self._template: dict[str, Any] = {}
 
+    @staticmethod
+    def _cleanup_string(value: str) -> str:
+        """
+        # Summary
+
+        Clean up a string value by removing unwanted characters and replacing
+        HTML entities with their corresponding characters.
+
+        ## Raises
+
+        None
+        """
+        value = re.sub('"', "", value)
+        value = re.sub("<br />", " ", value)
+        value = re.sub("&amp;", "&", value)
+        value = re.sub("&#39;", "'", value)
+        value = re.sub("&gt;", ">", value)
+        value = re.sub("&lt;", "<", value)
+        return value
+
     def refresh(self) -> None:
         """
         # Summary
@@ -150,7 +170,7 @@ class ParamInfo:
         if isinstance(choices, str):
             choices = re.sub(r'^\\"|\\$"', "", choices)
             choices = choices.split(",")
-            choices = [re.sub(r"\"", "", choice) for choice in choices]
+            choices = [self._cleanup_string(choice) for choice in choices]
         choices = [self.conversion.make_int(choice) for choice in choices]
         return choices
 
@@ -213,13 +233,7 @@ class ParamInfo:
             value = parameter.get("description", None)
         if value is None:
             return ""
-        value = re.sub('"', "", value)
-        value = re.sub("<br />", " ", value)
-        value = re.sub("&amp;", "&", value)
-        value = re.sub("&#39;", "'", value)
-        value = re.sub("&gt;", ">", value)
-        value = re.sub("&lt;", "<", value)
-        return value
+        return self._cleanup_string(value)
 
     def _get_display_name(self, parameter: dict[str, Any]) -> str:
         """
@@ -240,10 +254,7 @@ class ParamInfo:
             msg += "annotations.DisplayName key."
             self.log.debug(msg)
             return ""
-        value = re.sub('"', "", value)
-        value = re.sub("<br />", "", value)
-        value = re.sub("&amp;", "&", value)
-        return value
+        return self._cleanup_string(value)
 
     def _get_internal(self, parameter: dict[str, Any]) -> Union[bool, None]:
         """
