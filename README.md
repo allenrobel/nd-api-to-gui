@@ -96,7 +96,7 @@ examples below.  But you can clone it anywhere you want.
 
 ```bash
 cd $HOME/repos
-git clone UPDATE_URL
+git clone https://github.com/allenrobel/nd-api-to-gui.git
 ```
 
 ### Create a Virtual Environment and Install Dependencies
