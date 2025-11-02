@@ -152,6 +152,50 @@ class RestSend:
         msg += f"check_mode: {self.check_mode}"
         self.log.debug(msg)
 
+    def add_response(self, value: dict) -> None:
+        """
+        # Summary
+
+        Add a dict to the response list.
+
+        ## Raises
+
+        -   `TypeError`: if value is not a dict
+
+        ## See also
+
+        `@response` property
+        """
+        method_name: str = inspect.stack()[0][3]
+        if not isinstance(value, dict):
+            msg = f"{self.class_name}.{method_name}: "
+            msg += "value must be a dict. "
+            msg += f"Got type {type(value).__name__}."
+            raise TypeError(msg)
+        self._response.append(value)
+
+    def add_result(self, value: dict) -> None:
+        """
+        # Summary
+
+        Add a dict to the result list.
+
+        ## Raises
+
+        -   `TypeError`: if value is not a dict
+
+        ## See also
+
+        `@result` property
+        """
+        method_name: str = inspect.stack()[0][3]
+        if not isinstance(value, dict):
+            msg = f"{self.class_name}.{method_name}: "
+            msg += "value must be a dict. "
+            msg += f"Got {type(value).__name__}"
+            raise TypeError(msg)
+        self._result.append(copy.deepcopy(value))
+
     def _verify_commit_parameters(self) -> None:
         """
         # Summary
@@ -273,16 +317,16 @@ class RestSend:
 
         try:
             if self.check_mode is True:
-                self.commit_check_mode()
+                self._commit_check_mode()
             else:
-                self.commit_normal_mode()
+                self._commit_normal_mode()
         except (TypeError, ValueError) as error:
             msg = f"{self.class_name}.{method_name}: "
             msg += "Error during commit. "
             msg += f"Error details: {error}"
             raise ValueError(msg) from error
 
-    def commit_check_mode(self) -> None:
+    def _commit_check_mode(self) -> None:
         """
         # Summary
 
@@ -355,7 +399,7 @@ class RestSend:
             msg += f"Error detail: {error}"
             raise ValueError(msg) from error
 
-    def commit_normal_mode(self) -> None:
+    def _commit_normal_mode(self) -> None:
         """
         # Summary
 
@@ -596,28 +640,13 @@ class RestSend:
 
         ## Raises
 
-        -   setter: `TypeError` if value is not a `dict`
+        None
 
-        ## getter
+        ## See also
 
-        Return a copy of `response`
-
-        ## setter
-
-        Append value to `response`
+        `add_response()` method
         """
         return copy.deepcopy(self._response)
-
-    @response.setter
-    def response(self, value: dict[str, Any]) -> None:
-        method_name: str = inspect.stack()[0][3]
-        if not isinstance(value, dict):
-            msg = f"{self.class_name}.{method_name}: "
-            msg += f"{method_name} must be a dict. "
-            msg += f"Got type {type(value).__name__}, "
-            msg += f"Value: {value}."
-            raise TypeError(msg)
-        self._response.append(value)
 
     @property
     def response_handler(self) -> Any:
@@ -676,29 +705,13 @@ class RestSend:
 
         ## Raises
 
-        -   setter: `TypeError` if:
-                -   value is not a `dict`.
+        None
 
-        ## getter
+        ## See also
 
-        Return a copy of `result`
-
-        ## setter
-
-        Append value to `result`
+        `add_result()` method
         """
         return copy.deepcopy(self._result)
-
-    @result.setter
-    def result(self, value: dict[str, bool]) -> None:
-        method_name: str = inspect.stack()[0][3]
-        if not isinstance(value, dict):
-            msg = f"{self.class_name}.{method_name}: "
-            msg += f"{method_name} must be a dict. "
-            msg += f"Got type {type(value).__name__}, "
-            msg += f"Value: {value}."
-            raise TypeError(msg)
-        self._result.append(value)
 
     @property
     def result_current(self) -> dict[str, bool]:

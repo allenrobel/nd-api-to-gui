@@ -184,8 +184,8 @@ class Results:
     }
     ```
 
-    ``sequence_number`` indicates the order in which the task was registered
-    with ``Results``.  It provides a way to correlate the diff, response,
+    `sequence_number` indicates the order in which the task was registered
+    with `Results`.  It provides a way to correlate the diff, response,
     result, and metadata across all tasks.
 
     ## Typical usage within a task class such as FabricDelete
@@ -206,9 +206,9 @@ class Results:
 
         def commit(self):
             ...
-            self.results.changed = True  # or False, depending on whether changes were made
-            self.results.response_current = self.rest_send.response_current
-            self.results.result_current = self.rest_send.result_current
+            self.results.add_changed(True)  # or False, depending on whether changes were made
+            self.results.add_response(self.rest_send.response_current)
+            self.results.add_result(self.rest_send.result_current)
             self.results.register_task_result()
             ...
 
@@ -254,6 +254,111 @@ class Results:
 
         msg = f"ENTERED {self.class_name}():"
         self.log.debug(msg)
+
+    def add_changed(self, value: bool) -> None:
+        """
+        # Summary
+
+        Add a boolean value to the changed set.
+
+        ## Raises
+
+        -   `ValueError`: if value is not a bool
+
+        ## See also
+
+        -  `@changed` property
+        """
+        if not isinstance(value, bool):
+            msg = f"{self.class_name}.add_changed: "
+            msg += f"instance.add_changed must be a bool. Got {value}"
+            raise ValueError(msg)
+        self._changed.add(value)
+
+    def add_failed(self, value: bool) -> None:
+        """
+        # Summary
+
+        Add a boolean value to the failed set.
+
+        ## Raises
+
+        -   `ValueError`: if value is not a bool
+
+        ## See also
+
+        -  `@failed` property
+        """
+        if not isinstance(value, bool):
+            msg = f"{self.class_name}.add_failed: "
+            msg += f"instance.add_failed must be a bool. Got {value}"
+            raise ValueError(msg)
+        self._failed.add(value)
+
+    def add_response(self, value: dict) -> None:
+        """
+        # Summary
+
+        Add a dict to the response list.
+
+        ## Raises
+
+        -   `TypeError`: if value is not a dict
+
+        ## See also
+
+        `@response` property
+        """
+        method_name: str = inspect.stack()[0][3]
+        if not isinstance(value, dict):
+            msg = f"{self.class_name}.{method_name}: "
+            msg += f"instance.add_response must be a dict. Got {value}"
+            raise TypeError(msg)
+        value["sequence_number"] = self.task_sequence_number
+        self._response.append(copy.deepcopy(value))
+
+    def add_result(self, value: dict) -> None:
+        """
+        # Summary
+
+        Add a dict to the result list.
+
+        ## Raises
+
+        -   `TypeError`: if value is not a dict
+
+        ## See also
+
+        `@result` property
+        """
+        method_name: str = inspect.stack()[0][3]
+        if not isinstance(value, dict):
+            msg = f"{self.class_name}.{method_name}: "
+            msg += f"instance.add_result must be a dict. Got {value}"
+            raise TypeError(msg)
+        value["sequence_number"] = self.task_sequence_number
+        self._result.append(copy.deepcopy(value))
+
+    def add_response_data(self, value: dict) -> None:
+        """
+        # Summary
+
+        Add a dict to the response_data list.
+
+        ## Raises
+
+        -   `TypeError`: if value is not a dict
+
+        ## See also
+
+        `@response_data` property
+        """
+        method_name: str = inspect.stack()[0][3]
+        if not isinstance(value, dict):
+            msg = f"{self.class_name}.{method_name}: "
+            msg += f"instance.add_response_data must be a dict. Got {value}"
+            raise TypeError(msg)
+        self._response_data.append(copy.deepcopy(value))
 
     def increment_task_sequence_number(self) -> None:
         """
@@ -325,6 +430,10 @@ class Results:
 
         Register a task's result.
 
+        ## Raises
+
+        None
+
         ## Description
 
         1.  Append result_current, response_current, diff_current and
@@ -393,6 +502,10 @@ class Results:
 
         Build the final result.
 
+        ## Raises
+
+        None
+
         ## Description
 
         The final result consists of the following:
@@ -435,7 +548,12 @@ class Results:
 
     def add_to_failed(self, value: bool) -> None:
         """
+        # Summary
+
         Add a boolean value to the failed set.
+
+        ## Raises
+        -   `ValueError`: if value is not a bool
         """
         if not isinstance(value, bool):
             msg = f"{self.class_name}.add_to_failed: "
@@ -446,7 +564,13 @@ class Results:
     @property
     def failed_result(self) -> dict:
         """
-        return a result for a failed task with no changes
+        # Summary
+
+        Return a result for a failed task with no changes
+
+        ## Raises
+
+        None
         """
         result: dict = {}
         result["changed"] = False
@@ -459,7 +583,13 @@ class Results:
     @property
     def ok_result(self) -> dict:
         """
-        return a result for a successful task with no changes
+        # Summary
+
+        Return a result for a successful task with no changes
+
+        ## Raises
+
+        None
         """
         result: dict = {}
         result["changed"] = False
@@ -545,29 +675,21 @@ class Results:
         """
         # Summary
 
-        A set() containing boolean values indicating whether anything changed.
-
-        - The setter adds a boolean value to the set.
-        - The getter returns the set.
+        Returns a set() containing boolean values indicating whether anything changed.
 
         ## Raises
 
-        -   setter: `TypeError`: if value is not a bool
+        None
 
         ## Returns
 
-        -   A set() of Boolean values indicating whether any tasks changed
+        -   A set() of boolean values indicating whether any tasks changed
+
+        ## See also
+
+        -  `add_changed()` method to add to the changed set.
         """
         return self._changed
-
-    @changed.setter
-    def changed(self, value) -> None:
-        method_name: str = inspect.stack()[0][3]
-        if not isinstance(value, bool):
-            msg = f"{self.class_name}.{method_name}: "
-            msg += f"instance.changed must be a bool. Got {value}"
-            raise TypeError(msg)
-        self._changed.add(value)
 
     @property
     def check_mode(self) -> bool:
@@ -652,30 +774,20 @@ class Results:
         """
         # Summary
 
-        A set() of Boolean values indicating whether any tasks failed
+        A set() of boolean values indicating whether any tasks failed
 
         - If the set contains True, at least one task failed.
         - If the set contains only False all tasks succeeded.
-        - The setter adds a boolean value to the set.
-        - The getter returns the set.
 
         ## Raises
 
         - `TypeError` if value is not a bool.
+
+        ## See also
+
+        -  `add_failed()` method to add to the failed set.
         """
         return self._failed
-
-    @failed.setter
-    def failed(self, value: bool) -> None:
-        method_name: str = inspect.stack()[0][3]
-        if not isinstance(value, bool):
-            # Setting failed, itself failed(!)
-            # Add True to failed to indicate this.
-            self._failed.add(True)
-            msg = f"{self.class_name}.{method_name}: "
-            msg += f"instance.failed must be a bool. Got {value}"
-            raise TypeError(msg)
-        self._failed.add(value)
 
     @property
     def metadata(self) -> list[dict]:
@@ -760,50 +872,36 @@ class Results:
         """
         # Summary
 
-        A `list` of `dict`, where each `dict` contains a response from the controller.
-
-        -   getter: Return the response list.
-        -   setter: Append `dict` to the response list.
+        Return the response list; `list` of `dict`, where each `dict` contains a
+        response from the controller.
 
         ## Raises
 
-        - setter: `TypeError`: if value is not a dict.
+        None
+
+        ## See also
+
+        `add_response()` method to add to the response list.
         """
         return self._response
-
-    @response.setter
-    def response(self, value: dict) -> None:
-        method_name: str = inspect.stack()[0][3]
-        if not isinstance(value, dict):
-            msg = f"{self.class_name}.{method_name}: "
-            msg += "instance.response must be a dict. "
-            msg += f"Got {value}."
-            raise TypeError(msg)
-        value["sequence_number"] = self.task_sequence_number
-        self._response.append(copy.deepcopy(value))
 
     @property
     def response_data(self) -> list[dict]:
         """
         # Summary
 
-        A `list` of `dict`, where each `dict` contains the contents of the DATA key
-        within `current_response`.
+        Return a `list` of `dict`, where each `dict` contains the contents of the DATA key
+        within the responses that have been added.
 
-        -   getter: Return the contents of the DATA key within
-            `current_response`.
-        -   setter: set `response_data` to the value passed in
-            which should be the contents of the DATA key within
-            `current_response`.
+        ## Raises
 
-        ### Raises
         None
+
+        ## See also
+
+        `add_response_data()` method to add to the response_data list.
         """
         return self._response_data
-
-    @response_data.setter
-    def response_data(self, value: dict) -> None:
-        self._response_data.append(value)
 
     @property
     def result(self) -> list[dict]:
@@ -818,19 +916,12 @@ class Results:
         ## Raises
 
         -   setter: `TypeError` if value is not a dict
+
+        ## See also
+
+        `add_result()` method to add to the result list.
         """
         return self._result
-
-    @result.setter
-    def result(self, value: dict) -> None:
-        method_name: str = inspect.stack()[0][3]
-        if not isinstance(value, dict):
-            msg = f"{self.class_name}.{method_name}: "
-            msg += "instance.result must be a dict. "
-            msg += f"Got {value}."
-            raise TypeError(msg)
-        value["sequence_number"] = self.task_sequence_number
-        self._result.append(copy.deepcopy(value))
 
     @property
     def result_current(self) -> dict:
