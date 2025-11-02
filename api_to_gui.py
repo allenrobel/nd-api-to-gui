@@ -77,24 +77,24 @@ params["config"] = {}
 rest_send = RestSend(params)
 rest_send.response_handler = ResponseHandler()
 rest_send.sender = sender
-instance = RestApiToGui()
-instance.template_name = args.template_name
-instance.rest_send = rest_send
-instance.results = Results()
+rest_api_to_gui = RestApiToGui()
+rest_api_to_gui.template_name = args.template_name
+rest_api_to_gui.rest_send = rest_send
+rest_api_to_gui.results = Results()
 try:
-    instance.commit()
+    rest_api_to_gui.commit()
 except ValueError as error:
     print(f"Error occurred: {error}")
     sys_exit(1)
 
-for param_name in instance.parameter_names:
-    instance.parameter_name = param_name
-    display_name = instance.parameter_display_name
-    section = instance.parameter_section
+for param_name in rest_api_to_gui.parameter_names:
+    rest_api_to_gui.parameter_name = param_name
+    display_name = rest_api_to_gui.parameter_display_name
+    section = rest_api_to_gui.parameter_section
     if display_name in ["", None]:
         continue
-    MESSAGE = f"API Key: {instance.parameter_name}\n"
-    MESSAGE += f"  Description: {instance.parameter_description}\n"
+    MESSAGE = f"API Key: {rest_api_to_gui.parameter_name}\n"
+    MESSAGE += f"  Description: {rest_api_to_gui.parameter_description}\n"
     MESSAGE += f"  GUI Section: {section}\n"
     MESSAGE += f"  GUI Field Name: {display_name}\n"
     print(MESSAGE)

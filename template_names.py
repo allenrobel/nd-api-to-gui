@@ -52,14 +52,14 @@ params["config"] = {}
 rest_send = RestSend(params)
 rest_send.response_handler = ResponseHandler()
 rest_send.sender = sender
-instance = TemplateNames()
-instance.rest_send = rest_send
-instance.results = Results()
+template_names = TemplateNames()
+template_names.rest_send = rest_send
+template_names.results = Results()
 try:
-    instance.refresh()
+    template_names.refresh()
 except ValueError as error:
     print(f"Error occurred: {error}")
     sys_exit(1)
 
-for template_name in instance.template_names:
+for template_name in template_names.template_names:
     print(f"- {template_name}")
