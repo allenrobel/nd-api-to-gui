@@ -211,6 +211,11 @@ class RestApiToGui:
             description = self._param_info.parameter_description
             display_name = self._param_info.parameter_display_name
             section = self._param_info.parameter_section
+            param_type = self._param_info.parameter_type
+            if param_type:
+                self._rest_api_parameter_to_gui_mapping[param_name][
+                    "type"
+                ] = param_type
             if description:
                 self._rest_api_parameter_to_gui_mapping[param_name][
                     "description"
@@ -366,6 +371,33 @@ class RestApiToGui:
         return (
             self._rest_api_parameter_to_gui_mapping.get(self._parameter_name, {}).get(
                 "section"
+            )
+            or ""
+        )
+
+    @property
+    def parameter_type(self) -> str:
+        """
+        # Summary
+
+        Return the type of the current parameter.
+
+        ## Raises
+
+        None
+        """
+        method_name: str = inspect.stack()[0][3]
+        if not self._refreshed:
+            msg = f"{self.class_name}.{method_name}: "
+            msg += f"Call {self.class_name}.commit before accessing {method_name}."
+            raise ValueError(msg)
+        if not self._parameter_name:
+            msg = f"{self.class_name}.{method_name}: "
+            msg += f"parameter_name must be set before accessing {method_name}."
+            raise ValueError(msg)
+        return (
+            self._rest_api_parameter_to_gui_mapping.get(self._parameter_name, {}).get(
+                "type"
             )
             or ""
         )

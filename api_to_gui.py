@@ -97,4 +97,5 @@ for param_name in rest_api_to_gui.parameter_names:
     MESSAGE += f"  Description: {rest_api_to_gui.parameter_description}\n"
     MESSAGE += f"  GUI Section: {section}\n"
     MESSAGE += f"  GUI Field Name: {display_name}\n"
+    MESSAGE += f"  Parameter Type: {rest_api_to_gui.parameter_type}\n"
     print(MESSAGE)
